@@ -52,13 +52,13 @@ done
 
 
 # continue more verbose processing
+echo "Running: ssdt filtered..."
+cat $OutputPath/ssdt | egrep -v '(ntoskrnl|win32k)' > $OutputPath/ssdtGrep
 echo "Running malfind and dumping to $DumpPath..."
 VolPath malfind --dump-dir $DumpPath > $OutputPath/malfind # more advanced processing to come here
 echo "Running: mftparser..."
 $VolPath mftparser --output=body --output-file=$OutputPath/mftparser.csv
 mactime -b $OutputPath/mftparser.csv -d -z UTC > $OutputPath/mftparserMactime.csv
-echo "Running: ssdt filtered..."
-$VolPath ssdt | egrep -v '(ntoskrnl|win32k)' > $OutputPath/ssdtGrep
 echo "Processing standard modules finished: please review processed files in $outputPath while I run apihooks... "
 echo "Running: apihooks..."
 $VolPath apihooks > $outputPath/apihooks
