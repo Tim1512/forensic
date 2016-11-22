@@ -59,7 +59,7 @@ VolPath malfind --dump-dir $DumpPath > $OutputPath/malfind # more advanced proce
 echo "Running: mftparser..."
 $VolPath mftparser --output=body --output-file=$OutputPath/mftparser.csv
 mactime -b $OutputPath/mftparser.csv -d -z UTC > $OutputPath/mftparserMactime.csv
-echo "Processing standard modules finished: please review processed files in $outputPath while I run apihooks... "
+echo "Processing standard modules finished: please review processed files in $OutputPath while I run apihooks... "
 echo "Running: apihooks..."
-$VolPath apihooks > $outputPath/apihooks
+$VolPath apihooks > $OutputPath/apihooks
 echo "Processing Complete!"
