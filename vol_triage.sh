@@ -42,7 +42,7 @@ VolPath="vol.py -f $MemoryImagePath --profile="$ImageProfile""	# Path to run vol
 
 # Setup Array of modules to run. Currently run all profiles.
 # TODO: change array based on Profile
-Modules=(pslist psscan pstree psxview dlllist handles consoles cmdscan cmdline getsids modules ldrmodules modscan netscan connections connscan sockets sockscan connections connscan sockets sockscan ssdt svcscan malsysproc malprocfind autoruns hashdump mimicatz shimcache userassist filescan iehistory hivelist)
+Modules=(pslist psscan pstree psxview dlllist handles consoles cmdscan cmdline getsids modules ldrmodules modscan netscan connections connscan sockets sockscan connections connscan sockets sockscan ssdt svcscan malsysproc malprocfind autoruns hashdump mimicatz shimcache userassist filescan iehistory hivelist apihooks)
 
 for i in ${Modules[@]}
 do
@@ -55,11 +55,8 @@ done
 echo "Running: ssdt filtered..."
 cat $OutputPath/ssdt | egrep -v '(ntoskrnl|win32k)' > $OutputPath/ssdtGrep
 echo "Running malfind and dumping to $DumpPath..."
-VolPath malfind --dump-dir $DumpPath > $OutputPath/malfind # more advanced processing to come here
-echo "Running: mftparser..."
-$VolPath mftparser --output=body --output-file=$OutputPath/mftparser.csv
+$VolPath malfind --dump-dir $DumpPath > $OutputPath/malfind # more advanced processing to come here
+echo "Running: mftparser and mactime..."
+$VolPath mftparser --output=body --output-file=$OutputPath/mftparser.body
 mactime -b $OutputPath/mftparser.csv -d -z UTC > $OutputPath/mftparserMactime.csv
-echo "Processing standard modules finished: please review processed files in $OutputPath while I run apihooks... "
-echo "Running: apihooks..."
-$VolPath apihooks > $OutputPath/apihooks
 echo "Processing Complete!"
