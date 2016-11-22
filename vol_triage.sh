@@ -58,5 +58,5 @@ echo "Running malfind and dumping to $DumpPath..."
 $VolPath malfind --dump-dir $DumpPath > $OutputPath/malfind # more advanced processing to come here
 echo "Running: mftparser and mactime..."
 $VolPath mftparser --output=body --output-file=$OutputPath/mftparser.body
-mactime -b $OutputPath/mftparser.csv -d -z UTC > $OutputPath/mftparserMactime.csv
+mactime -b $OutputPath/mftparser.body -d -z UTC > $OutputPath/mftparserMactime.csv
 echo "Processing Complete!"
