@@ -5,9 +5,7 @@
 # Version 0.1
 #
 # Description:
-# timeline.sh is a quick script to
-# 1) Mount Evidence drive and availible vss
-# 2) Generate Supertimeline.csv
+# timeline.sh is a quick script to Generate Supertimeline.csv
 #	- you will need to specifiy vss to process during execution
 #	- you will need to merge supertimeline to colour template
 #
@@ -36,9 +34,8 @@ l2tl_parser_config="winevtx,filestat,winreg,webhist,lnk,prefetch" # modify as re
 DiskEvidence=$CaseFolder"/"$DiskEvidence
 
 echo $DiskEvidence
-echo Log2Timeline parsers are: $l2tl_parser_config
-
-echo processing Supertimeline...
+echo Configured parsers are: $l2tl_parser_config
+echo Processing Supertimeline... from $l2tl_start_date to $l2tl_end_date
 cd $CaseFolder
 log2timeline.py --parsers "$l2tl_parser_config" plaso.dump $DiskEvidence
 psort.py -z "UTC" -o L2tcsv plaso.dump "date > '$l2tl_start_date' AND date < '$l2tl_end_date'" > $CaseName-timeline.csv
