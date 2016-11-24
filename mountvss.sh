@@ -17,15 +17,12 @@
 #
 ##
 ###Paramaters###
-CaseName="<machine or case name>"
-DiskEvidence="<disk evidence file (E01|AFF|etc)>"
-CaseFolder="/cases/"$CaseName
+DiskEvidence="/cases/Win7-64-001/Win7-64-C.E01"
+CaseFolder="/cases/Win7-64-001"
 ################
 ###
 ##
 #
-
-DiskEvidence=$CaseFolder"/"$DiskEvidence
 
 echo mounting $DiskEvidence...
 ewfmount $DiskEvidence /mnt/ewf_mount

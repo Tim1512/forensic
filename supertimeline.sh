@@ -19,27 +19,23 @@
 #
 ##
 ###Paramaters###
-CaseName="<ItemName best to use machine, item or case name>"
-DiskEvidence="<disk evidence file (E01|AFF|etc)>"
-#memory_evidence="win7-64-memory-raw.001" # not yet used
-CaseFolder="/cases/"$CaseName
-l2tl_start_date="2016-04-02 20:00:00"
-l2tl_end_date="2016-10-20 00:00:00"
-l2tl_parser_config="winevtx,filestat,winreg,webhist,lnk,prefetch" # modify as required
+DiskEvidence="/cases/Win7-64-001/Win7-64-C.E01"
+CaseFolder="/cases/Win7-64-001"
+L2tlStartDate="2016-04-02 20:00:00"
+L2tlEndDate="2016-10-20 00:00:00"
+L2tlParserConfig="winevtx,filestat,winreg,webhist,lnk,prefetch" # modify as required
 ################
 ###
 ##
 #
 
-DiskEvidence=$CaseFolder"/"$DiskEvidence
-
 echo $DiskEvidence
-echo Configured parsers are: $l2tl_parser_config
-echo Processing Supertimeline... from $l2tl_start_date to $l2tl_end_date
+echo Configured parsers are: $L2tlParserConfig
+echo Processing Supertimeline... from $L2tlStartDate to $L2tlEndDate
 cd $CaseFolder
-log2timeline.py --parsers "$l2tl_parser_config" plaso.dump $DiskEvidence
-psort.py -z "UTC" -o L2tcsv plaso.dump "date > '$l2tl_start_date' AND date < '$l2tl_end_date'" > $CaseName-timeline.csv
-grep -v -i -f /cases/whitelist.txt $CaseName-timeline.csv > FINAL-$CaseName-timeline.csv
-echo Timeline complete: FINAL-$CaseName-timeline.csv
+log2timeline.py --parsers "$L2tlParserConfig" plaso.dump $DiskEvidence
+psort.py -z "UTC" -o L2tcsv plaso.dump "date > '$L2tlStartDate' AND date < '$L2tlEndDate'" > echo $(basename ${DiskEvidence%.*})-timeline.csv
+grep -v -i -f /cases/whitelist.txt $(basename ${DiskEvidence%.*})-timeline.csv > $(basename ${DiskEvidence%.*})-timeline-final.csv
+echo Timeline complete: $(basename ${DiskEvidence%.*})-timeline-final.csv
 
 

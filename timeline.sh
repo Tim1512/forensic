@@ -18,26 +18,22 @@
 #
 ##
 ###Paramaters###
-CaseName="win7-32-nromanoff"
-DiskEvidence="win7-32-nromanoff-c-drive.E01"
-MemoryImagePath="win7-32-nromanoff-memory-raw.001"
-CaseFolder="/cases/"$CaseName
-l2tl_start_date="2012-04-02"
-l2tl_end_date="2012-04-07"
-$ImageProfile="Win7SP1x86"
+DiskEvidence="/cases/Win7-64-001/Win7-64-C.E01"
+MemoryImagePath="/cases/Win7-64-001/Win7-64-memory-raw.001"
+ImageProfile="Win7SP1x86"
+CaseFolder="/cases/Win7-64-001" 
+L2tlStartDate="2016-04-02 20:00:00"
+L2tlEndDate="2016-10-20 00:00:00"
+Name=$(basename ${DiskEvidence%.*}) # remove folder and extension form path
 ################
 ###
 ##
 #
-
-DiskEvidence=$CaseFolder"/"$DiskEvidence
-MemoryImagePath=$CaseFolder"/"$MemoryImagePath
-
 echo Processing Timeline...
 
 # check if disk image to process and process if exist
 if [ -n $DiskEvidence ]; then
-	fls -r -m C: $DiskEvidence > $CaseFolder/$CaseName.body
+	fls -r -m C: $DiskEvidence > $CaseFolder/$Name.body
 fi 
 
 # Check if memory image to process and process if exist
@@ -52,10 +48,10 @@ if [ -n $MemoryImagePath ]; then
 	vol.py -f $MemoryImagePath --profile=$ImageProfile timeliner --output=body --output-file=$CaseFolder/timeliner.body    
 fi
 
-cat $CaseFolder/timeliner.body >> $CaseFolder/$CaseName.body
-mactime -d -b $CaseFolder/$CaseName.body $l2tl_start_date..$l2tl_end_date > $CaseFolder/$CaseName-mactime.csv
-grep -v -i -f /cases/whitelist.txt $CaseFolder/$CaseName-mactime.csv > $CaseFolder/$CaseName-mactime-final.csv
+cat $CaseFolder/timeliner.body >> $CaseFolder/$Name.body
+mactime -d -b $CaseFolder/$Name.body $l2tl_start_date..$l2tl_end_date > $CaseFolder/$Name-mactime.csv
+grep -v -i -f /cases/whitelist.txt $CaseFolder/$Name-mactime.csv > $CaseFolder/$Name-mactime-final.csv
 
-echo Timeline complete: $CaseFolder/$CaseName-mactime-final.csv
+echo Timeline complete: $CaseFolder/$Name-mactime-final.csv
 
 
