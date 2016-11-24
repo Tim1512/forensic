@@ -5,13 +5,12 @@
 # Version 0.1
 #
 # Description:
-# timeline.sh is a quick script to Generate Supertimeline.csv
-#	- you will need to specifiy vss to process during execution
-#	- you will need to merge supertimeline to colour template
+# timeline.sh is a quick script to Generate a mactime timeline from fls and Volatility timeliner plugin
+#	- you will need to merge to colour template
 #
 # Instructions:
 # - create case name folder in /cases/
-# - add disk evidence, memory evidence and baseline memory
+# - add disk evidence and memory evidence
 # - set paramaters in script
 # - ensure /cases/whitelist.txt exists
 # - run as sudo
@@ -19,26 +18,44 @@
 #
 ##
 ###Paramaters###
-CaseName="<ItemName best to use machine, item or case name>"
-DiskEvidence="<disk evidence file (E01|AFF|etc)>"
-#memory_evidence="win7-64-memory-raw.001" # not yet used
+CaseName="win7-32-nromanoff"
+DiskEvidence="win7-32-nromanoff-c-drive.E01"
+MemoryImagePath="win7-32-nromanoff-memory-raw.001"
 CaseFolder="/cases/"$CaseName
-l2tl_start_date="2016-04-02 20:00:00"
-l2tl_end_date="2016-10-20 00:00:00"
-l2tl_parser_config="winevtx,filestat,winreg,webhist,lnk,prefetch" # modify as required
+l2tl_start_date="2012-04-02"
+l2tl_end_date="2012-04-07"
+$ImageProfile="Win7SP1x86"
 ################
 ###
 ##
 #
 
 DiskEvidence=$CaseFolder"/"$DiskEvidence
+MemoryImagePath=$CaseFolder"/"$MemoryImagePath
 
-echo $DiskEvidence
-echo Configured parsers are: $l2tl_parser_config
-echo Processing Supertimeline... from $l2tl_start_date to $l2tl_end_date
-cd $CaseFolder
-log2timeline.py --parsers "$l2tl_parser_config" plaso.dump $DiskEvidence
-psort.py -z "UTC" -o L2tcsv plaso.dump "date > '$l2tl_start_date' AND date < '$l2tl_end_date'" > $CaseName-timeline.csv
-grep -v -i -f /cases/whitelist.txt $CaseName-timeline.csv > FINAL-$CaseName-timeline.csv
-echo Timeline complete: FINAL-$CaseName-timeline.csv
+echo Processing Timeline...
+
+# check if disk image to process and process if exist
+if [ -n $DiskEvidence ]; then
+	fls -r -m C: $DiskEvidence > $CaseFolder/$CaseName.body
+fi 
+
+# Check if memory image to process and process if exist
+if [ -n $MemoryImagePath ]; then
+	# Check if profile set or prompt for input
+	if [ -z $ImageProfile ]; then 
+		vol.py -f $MemoryImagePath imageinfo > $CaseFolder/imageinfo
+		cat $CaseFolder/imageinfo | grep "Suggested Profile" 
+  		echo "Please enter preffered profile: "
+  	 	read ImageProfile
+	fi
+	vol.py -f $MemoryImagePath --profile=$ImageProfile timeliner --output=body --output-file=$CaseFolder/timeliner.body    
+fi
+
+cat $CaseFolder/timeliner.body >> $CaseFolder/$CaseName.body
+mactime -d -b $CaseFolder/$CaseName.body $l2tl_start_date..$l2tl_end_date > $CaseFolder/$CaseName-mactime.csv
+grep -v -i -f /cases/whitelist.txt $CaseFolder/$CaseName-mactime.csv > $CaseFolder/$CaseName-mactime-final.csv
+
+echo Timeline complete: $CaseFolder/$CaseName-mactime-final.csv
+
 
