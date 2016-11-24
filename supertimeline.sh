@@ -24,6 +24,7 @@ CaseFolder="/cases/Win7-64-001"
 L2tlStartDate="2016-04-02 20:00:00"
 L2tlEndDate="2016-10-20 00:00:00"
 L2tlParserConfig="winevtx,filestat,winreg,webhist,lnk,prefetch" # modify as required
+Name=$(basename ${DiskEvidence%.*}) # remove folder and extension form path
 ################
 ###
 ##
@@ -34,8 +35,8 @@ echo Configured parsers are: $L2tlParserConfig
 echo Processing Supertimeline... from $L2tlStartDate to $L2tlEndDate
 cd $CaseFolder
 log2timeline.py --parsers "$L2tlParserConfig" plaso.dump $DiskEvidence
-psort.py -z "UTC" -o L2tcsv plaso.dump "date > '$L2tlStartDate' AND date < '$L2tlEndDate'" > echo $(basename ${DiskEvidence%.*})-timeline.csv
-grep -v -i -f /cases/whitelist.txt $(basename ${DiskEvidence%.*})-timeline.csv > $(basename ${DiskEvidence%.*})-timeline-final.csv
-echo Timeline complete: $(basename ${DiskEvidence%.*})-timeline-final.csv
+psort.py -z "UTC" -o L2tcsv plaso.dump "date > '$L2tlStartDate' AND date < '$L2tlEndDate'" > echo $Name-timeline.csv
+grep -v -i -f /cases/whitelist.txt $Name-timeline.csv > $Name-timeline-final.csv
+echo Timeline complete: $Name-timeline-final.csv
 
 
