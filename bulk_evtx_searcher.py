@@ -25,8 +25,6 @@ import os, multiprocessing
 from datetime import datetime
 
 ##### Initialisation #####
-input_folder = ""
-output_file = ""
 search_terms = []
 input_files = []
 ##########################
